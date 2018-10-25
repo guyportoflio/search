@@ -1,12 +1,15 @@
 var fs = require('fs');
 var path = require('path');
-
+var firstparameterbad = 0;
+var noparameters = 1;
+var gotsomething = 0;
 
   var myArgs = process.argv.slice(2)                   //saving arguments from user and slicing off unnecessary part
-  if (myArgs == "" ){                                 // checking for empty array
-   console.log("USAGE: node search [EXT] [TEXT]");   //  if empty then help options
+ 
+   if (((firstparameterbad == 0 ) && (myArgs == "" ))){                                 // checking for empty array
+   console.log("USAGE: node search [EXT] [TEXT]");    //  if empty then help options
+   noparameters = 0;
   }
-  
   function directoriesList(directory){
 	 
 	
@@ -15,19 +18,28 @@ var path = require('path');
 	  for(var x in readFolder){
 		  var next = path.join(directory, readFolder[x]);
 		  if(path.extname(next) == ("." + myArgs[0]) ){
-			  console.log(next);
+			//console.log(next);
 			
 			fs.readFile(next, 'utf8', function(err, data){
 				if(err) throw err;
 				
 				if((data.indexOf(myArgs[1]) >= 0) && (path.extname(next) == ("." + myArgs[0]) )){
-            console.log(next)
-              }
-					
-			});
+           console.log(next)
+			gotsomething = 1;
 			
+              }
+					 
+			});
+		//	 if((myArgs[0] == null)|| (myArgs[1] == null)) {
+         //     empty = 1;
+			//  console.log("its rly empty");
+			// }	
 		  }
-
+           
+		   if(path.extname(next) !== ("." + myArgs[0]) ){
+			    firstparameterbad = 1;
+		  }
+			   
 		  if(fs.lstatSync(next).isDirectory() == true){
 			 
 			  directoriesList(next); 
@@ -36,6 +48,10 @@ var path = require('path');
   }
   
   directoriesList(__dirname);
+  if(((firstparameterbad == 1 )  && (!gotsomething == 0))  && (noparameters == 0)){
+	  console.log("no file was found");
+	
+  }
   
   
                                                    
@@ -111,5 +127,7 @@ search(currentFolder, function(err, items){
 	//  foldersFound.push(trying);
 	  //console.log('myArgs: ' , myArgs)  ; 
  // }
+ 
+   
 	*/
 	
