@@ -1,61 +1,98 @@
 var fs = require('fs');
 var path = require('path');
-var firstparameterbad = 0;
-var noparameters = 1;
+var noparameters = 0;
 var gotsomething = 0;
-
-  var myArgs = process.argv.slice(2)                   //saving arguments from user and slicing off unnecessary part
+var firstparameternotok = 0;
+var myArgs = process.argv.slice(2)                   //saving arguments from user and slicing off unnecessary part
  
-   if (((firstparameterbad == 0 ) && (myArgs == "" ))){                                 // checking for empty array
-   console.log("USAGE: node search [EXT] [TEXT]");    //  if empty then help options
-   noparameters = 0;
-  }
-  function directoriesList(directory){
-	 
-	
+   if ((myArgs == "" )){                                 // checking for empty array
+    console.log("USAGE: node search [EXT] [TEXT]");    //  if empty then help options
+    noparameters = 1;
+    }
+ 
+     function directoriesList(directory){
 	  
 	  var readFolder = fs.readdirSync(directory);
+	  
 	  for(var x in readFolder){
-		  var next = path.join(directory, readFolder[x]);
-		  if(path.extname(next) == ("." + myArgs[0]) ){
-			//console.log(next);
+	  
+	   var next = path.join(directory, readFolder[x]);
+		 
+	    if(path.extname(next) == ("." + myArgs[0]) ){
+		 firstparameternotok = 1;	
+		 gotsomething = 1;
+		 var str = (myArgs[1]);
+		 var contents = fs.readFileSync(next, 'utf8');
+         var foundIt = contents.indexOf(myArgs[1]);
 			
-			fs.readFile(next, 'utf8', function(err, data){
-				if(err) throw err;
+		  if(!(foundIt == (-1))){
+			 console.log(path.dirname(next) + " " + path.basename(next))
+			 gotsomething = 0;
+			 }
+		}
+           	   
+		  if(fs.lstatSync(next).isDirectory() == true){ 
+			  directoriesList(next); 
+		     }  
+	   }  
+      }
+  
+      directoriesList(__dirname);
+ 
+     if(((noparameters == 0) && (gotsomething == 1)) || ((noparameters == 0) && (firstparameternotok == 0))) {
+	   console.log("no file was found")
+	   //the second side of the condition was just added to fix the issue of the first parameter
+	   // a.k.a the file extension not fitting any file. not necessary by requirement  but nice touch i think...
+      }
+ 
+  
+  ///////////////////////////////////////////////////////////////////////////////////
+  ///                                                                             ///
+  ///         code snippets that were removes after                               ///
+  ///            the second submission of the task                                ///
+  ///                                                                             ///
+  ///////////////////////////////////////////////////////////////////////////////////
+                                                   
+   // if(((firstparameterbad == 1 )  && (!gotsomething == 0))  && (noparameters == 0)){
+	//  console.log("no file was found");
+	
+ // }
+												   
+			//   if(path.extname(next) !== ("." + myArgs[0]) ){
+		//	    firstparameterbad = 1;
+		//  }		
+
+
+		//console.log(str);
+		//	if((myArgs[1])match(next) >= 0){
+		//	  console.log(path.dirname(next) + " " + path.basename(next))  // fix number one!!!
+		//	}
+		//	fs.readFile(next, 'utf8', function(err, data){
+		//		if(err) throw err;
 				
-				if((data.indexOf(myArgs[1]) >= 0) && (path.extname(next) == ("." + myArgs[0]) )){
-           console.log(next)
-			gotsomething = 1;
+				
+			 //console.log(contents);
+				//if((data.indexOf(myArgs[1]) >= 0) && (path.extname(next) == ("." + myArgs[0]) )){
+			//     gotsomething = 1;
+            //    }
 			
-              }
-					 
-			});
+			//  console.log( " boom " + next)
+				//if (path.dirname() == path.dirname(directory))	 {
+				//	console.log(next)
+				//	gotsomething = 1;
+				//}
+	   //		});
 		//	 if((myArgs[0] == null)|| (myArgs[1] == null)) {
          //     empty = 1;
 			//  console.log("its rly empty");
-			// }	
-		  }
-           
-		   if(path.extname(next) !== ("." + myArgs[0]) ){
-			    firstparameterbad = 1;
-		  }
-			   
-		  if(fs.lstatSync(next).isDirectory() == true){
-			 
-			  directoriesList(next); 
-		  }  
-	  }  
-  }
-  
-  directoriesList(__dirname);
-  if(((firstparameterbad == 1 )  && (!gotsomething == 0))  && (noparameters == 0)){
-	  console.log("no file was found");
-	
-  }
-  
-  
-                                                   
+			// }		
+ 
+        //var firstparameterbad = 0;		
+        // console.log("" + foundIt)	
 
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+		
 /*
 /////////////////////////////////////////////////////////////////////////////////
 // JUST ADDED ALL MY VARIUOS ATTEMPTS TO WRITE THIS....I MADE ALOF OF MISTAKES //
